@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+  <!-- Dashboard -->
+    <record model="ir.actions.client" id="odoo_osm_sync.action_dashboard">
+      <field name="name">Dashboard</field>
+      <field name="tag">odoo_osm_sync.dashboard</field>
+    </record>
+
+    <menuitem 
+      name="Dashboard" 
+      id="odoo_osm_sync.Dashboard" 
+      action="odoo_osm_sync.action_dashboard"
+    />
+
+    <template id="assets_backend" name="Odoo Overpass BE" inherit_id="web.assets_backend">
+        <xpath expr="." position="inside">
+          <link href="/odoo_osm_sync/static/src/css/dashboard.css" rel="stylesheet" type="text/css"/>
+          <script type="text/javascript" src="/odoo_osm_sync/static/src/js/dashboard.js"></script>
+          <script type="text/javascript" src="/odoo_osm_sync/static/src/js/overpass_dashboard.js"></script>
+        </xpath>
+    </template>
+
+  <data>
+    <!-- View -->
+      <!-- business data -->
+      <record model="ir.ui.view" id="odoo_osm_sync.build_data">
+        <field name="name">odoo_osm_sync build_data</field>
+        <field name="model">osm.build</field>
+        <field name="arch" type="xml">
+          <form>
+            <header>
+              <button  class="btn-primary o_sale_confirm" name="button_open_wizard_own" type="object" string="Create Owner" />
+              <button  class="btn-primary o_sale_confirm" name="button_open_wizard_tnt" type="object" string="Create Tenant" />
+
+            </header>
+            <sheet>
+              <group>
+                <group>
+                  <field name="bus_ids"/>
+                  <field name="street"/>
+                  <field name="name"/>
+                  <field name="building"/>
+                  <field name="levels"/>
+                </group>
+                <group>
+                  <field name="material"/>
+                  <field name="shop"/>
+                  <field name="types"/>
+                  <field name="amenity"/>
+                </group>
+              </group>
+              <notebook>
+                  <page string="Results">
+                    <field name="info_data">
+                      <tree string="Business Lines" editable="bottom">
+                        <field name="types" invisible = "1"/>
+                        <field name="bus_ids"/>
+                        <field name="lat" invisible = "1"/>
+                        <field name="lon" invisible = "1"/>
+                        <field name="name" invisible = "1"/>
+                        <field name="shop" invisible = "1"/>
+                        <field name="amenity" invisible = "1"/>
+                        <field name="tenant"/>
+                        <field name="owner"/>
+                        <field name="citizen" invisible = "1"/>
+                        <field name="rent" invisible = "1"/>
+                        <field name="vrn" invisible = "1"/>
+                        <field name="assess" invisible = "1"/>
+                        <field name="branch" invisible = "1"/>
+                        <field name="tax" invisible = "1"/>
+                        <field name="tin" invisible = "1"/>
+                        <field name="efd" invisible = "1"/>
+                        <field name="valued" invisible = "1"/>
+                      </tree>
+                    </field>
+                  </page>
+              </notebook>
+            </sheet>
+          </form>
+        </field>
+      </record>
+
+      <record model="ir.ui.view" id="odoo_osm_sync.build_own">
+        <field name="name">odoo_osm_sync build_own</field>
+        <field name="model">build.own</field>
+        <field name="arch" type="xml">
+          <form>
+            <header>
+              <button name="create_own"  class="btn-primary o_sale_confirm sub-tnt" string="Run" type="object"/>
+            </header>
+            <sheet>
+              <group>
+                <group>
+                  <field name="bus_ids"/>
+                  <field name="name"/>
+                  <field name="vrn"/>
+                  <field name="tin"/>
+                  <field name="efd"/>
+                  <field name="tax"/>
+                </group>
+                <group>
+                  <field name="valued"/>
+                  <field name="assess"/>
+                  <field name="branch"/>
+                  <field name="citizen"/>
+                </group>
+              </group>
+              <notebook>
+                 <page string="Results">
+                    <field name="tenants_id">
+                      <tree string="Tenant Lines" editable="bottom">
+                        <field name="tenant_name"/>
+                        <field name="citizen"/>
+                        <field name="rent"/>
+                        <field name="tax"/>
+                      </tree>
+                    </field>
+                  </page>
+              </notebook>
+            </sheet>
+          </form>
+        </field>
+      </record>
+
+      <record model="ir.ui.view" id="odoo_osm_sync.build_tnt">
+        <field name="name">odoo_osm_sync build_tnt</field>
+        <field name="model">build.tnt</field>
+        <field name="arch" type="xml">
+          <form>
+            <header>
+              <button name="create_tnt"  class="btn-primary o_sale_confirm sub-tnt" string="Run" type="object"/>
+            </header>
+            <sheet>
+              <group>
+                <group>
+                  <field name="bus_ids"/>
+                  <field name="name"/>
+                  <field name="citizen"/>
+                  <field name="rent"/>
+                  <field name="vrn"/>
+                  <field name="assess"/>
+                </group>
+                <group>
+                  <field name="branch"/>
+                  <field name="tax"/>
+                  <field name="tin"/>
+                  <field name="efd"/>
+                  <field name="valued"/>
+                </group>
+              </group>
+            </sheet>
+          </form>
+        </field>
+      </record>
+
+      <record model="ir.ui.view" id="odoo_osm_sync.info_data">
+        <field name="name">odoo_osm_sync info_data</field>
+        <field name="model">info.data</field>
+        <field name="arch" type="xml">
+          <form>
+            <sheet>
+              <group>
+                <group>
+                  <field name="tenant" attrs="{'invisible': [('owner', '!=', 'Nr')]}"/>
+                  <field name="owner"  attrs="{'invisible': [('tenant', '!=', 'Nr')]}"/>
+                  <field name="citizen"/>
+                  <field name="rent" attrs="{'invisible': [('owner', '!=', 'Nr')]}"/>
+                  <field name="vrn"/>
+                  <field name="assess"/>
+                  <field name="branch"/>
+                  
+
+                  <field name="types" invisible = "1"/>
+                  <field name="bus_ids" invisible = "1"/>
+                  <field name="lat" invisible = "1"/>
+                  <field name="lon" invisible = "1"/>
+                  <field name="name" invisible = "1"/>
+                  <field name="shop" invisible = "1"/>
+                  <field name="amenity" invisible = "1"/>
+                </group>
+                <group>
+                  <field name="tax"/>
+                  <field name="tin"/>
+                  <field name="efd"/>
+                  <field name="valued"/>
+                </group>
+              </group>
+            </sheet>
+          </form>
+        </field>
+      </record>
+
+      <record model="ir.ui.view" id="odoo_osm_sync res_partner_ext" >
+            <field name="name">odoo_osm_sync_res_partner_ext</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <data>
+                  <xpath expr="//div[@name='button_box']" position="before">
+                    <div class="run_button" style="padding-bottom: 20px;">
+                      <button name="create_own"  class="btn-primary o_sale_confirm sub-tnt" string="Run" type="object"/>
+                    </div>
+                  </xpath>
+                  <xpath expr="//field[@name='website']" position="before">
+                      <field name="bus_ids"/>
+                      <field name="vrn"/>
+                      <field name="tin"/>
+                      <field name="efd"/>
+                      <field name="tax"/>
+                  </xpath>
+                  <xpath expr="//field[@name='function']" position="before">
+                      <field name="valued"/>
+                      <field name="assess"/>
+                      <field name="branch"/>
+                      <field name="citizen"/>
+                  </xpath>
+                  <!-- <xpath expr="//page[@name='sales_purchases']" position="after"> -->
+                  <xpath expr="//notebook/page" position="before">
+                      <page string="Tenant Info" autofocus="autofocus">
+                        <field name="tenants_id">
+                          <tree string="Tenant Lines" editable="bottom">
+                            <field name="tenant_name"/>
+                            <field name="citizen"/>
+                            <field name="rent"/>
+                            <field name="tax"/>
+                          </tree>
+                        </field>
+                      </page>
+                  </xpath>
+                </data>
+            </field>
+        </record>
+
+    <!-- actions opening views on models -->
+    
+      <record model="ir.actions.act_window" id="odoo_osm_sync.action_window_buss">
+        <field name="name">Business</field>
+        <field name="res_model">osm.build</field>
+        <field name="view_mode">tree,form</field>
+      </record>
+
+      <record model="ir.actions.act_window" id="odoo_osm_sync.action_window_own">
+        <field name="name">Owner</field>
+        <field name="res_model">build.own</field>
+        <field name="view_mode">tree,form</field>
+        <!-- <field name="target">new</field> -->
+      </record>
+
+      <record model="ir.actions.act_window" id="odoo_osm_sync.action_window_tnt">
+        <field name="name">Tenant</field>
+        <field name="res_model">build.tnt</field>
+        <field name="view_mode">tree,form</field>
+        <!-- <field name="target">new</field> -->
+      </record>
+    
+    <!-- Menu Items -->
+      <!-- Top Menu -->
+        <menuitem name="OSM" id="odoo_osm_sync.menu_root"/>
+        
+      <!-- Second Menu -->
+        <menuitem 
+          name="Overpass" 
+          id="odoo_osm_sync.menu_1" 
+          parent="odoo_osm_sync.menu_root"
+          />
+      <!-- Third Menu -->
+        <menuitem 
+          name="Business Data" 
+          id="odoo_osm_sync.buss" 
+          parent="odoo_osm_sync.menu_1"
+          action="odoo_osm_sync.action_window_buss"
+        />
+        <menuitem 
+          name="Owner Data" 
+          id="odoo_osm_sync.own" 
+          parent="odoo_osm_sync.menu_1"
+          action="odoo_osm_sync.action_window_own"
+        />
+        <menuitem 
+          name="Tenant Data" 
+          id="odoo_osm_sync.tnt" 
+          parent="odoo_osm_sync.menu_1"
+          action="odoo_osm_sync.action_window_tnt"
+        />
+  </data>
+</odoo>

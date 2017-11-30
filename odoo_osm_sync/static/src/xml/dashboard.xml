@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<templates xml:space="preserve">
+	<t t-name="DashboardOsm">
+	    <div class="container-fluid osm-main">
+	    	<div class="row">
+	        	<div class="osm-search-chart">
+					<div class="osm-search-box">
+						<form>
+				            <button type="submit" class="fa fa-search search-button" value="search">
+				            	&amp;nbsp;
+				            </button>
+				            <input type="search" id="search_area" class="search-area" />
+				        </form>
+					</div>
+				</div>
+	  			<div class="osm-search-result"></div>
+	  		</div>
+	    </div>
+	</t>
+	<t t-name="SearchResult">
+		<div class="osm-search-result">
+			<div class="osm-result-chart">
+				<table class="o_list_view table table-condensed">
+                    <thead>
+                        <tr>                           
+                          <th data-id="pro_id" class="o_column_sortable">
+                              ID
+                          </th>
+                      
+                          <th data-id="street" class="o_column_sortable">
+                              Street
+                          </th>
+                      
+                          <th data-id="name" class="o_column_sortable">
+                              Name
+                          </th>
+                      
+                          <th data-id="building" class="o_column_sortable">
+                              Building
+                          </th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                        </tr>
+                    </tfoot>
+                    <tbody>
+                        <tr>
+                          <td title="ID">&amp;nbsp;</td>
+                          <td title="Street">&amp;nbsp;</td>
+                          <td title="Name">&amp;nbsp;</td>
+                          <td title="Building">&amp;nbsp;</td>
+                        </tr>
+                        <tr>
+                          <td title="ID">&amp;nbsp;</td>
+                          <td title="Street">&amp;nbsp;</td>
+                          <td title="Name">&amp;nbsp;</td>
+                          <td title="Building">&amp;nbsp;</td>
+                        </tr><tr>
+                          <td title="ID">&amp;nbsp;</td>
+                          <td title="Street">&amp;nbsp;</td>
+                          <td title="Name">&amp;nbsp;</td>
+                          <td title="Building">&amp;nbsp;</td>
+                        </tr>
+                    </tbody>
+                </table>
+			</div>
+		</div>
+	</t>
+</templates>
