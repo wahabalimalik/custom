@@ -48,13 +48,18 @@ var Dashboard = Widget.extend({
 		);
 		
 		function proceed() {
-			area_code(area);
+
+			try {
+			    area_code(area);
+			}
+			catch(err) {
+			    alert('OSM not recoignise ' + area + ' as an area')
+			    return true;
+			}
+
 			fetch_data();
 
 	        self.load().done(data_table.replace(self.$('.osm-search-result')));
-
-			console.log(res);
-			console.log(data);
 		}
 		function area_code(area,callback) {
 	    	var area_code_value = $.ajax(
@@ -85,6 +90,7 @@ var Dashboard = Widget.extend({
 			);
 			res = cache[area];
 			var area_ref = 1 * res.osm_id;
+
 			if (res.osm_type == "way") area_ref += 2400000000;
 			if (res.osm_type == "relation") area_ref += 3600000000;
 			res = "area(" + area_ref + ")";
@@ -171,7 +177,8 @@ var Dashboard = Widget.extend({
 			types : types || 'N/A',
 			amenity : amenity || 'N/A',
 
-		}).then(function (rows) {
+		}).then(function (res) {
+			console.log(res);
     		self.do_action('odoo_osm_sync.action_window_buss',{});
         });
     },
@@ -202,7 +209,7 @@ var SearchResult = Widget.extend({
 				if (this.has_data(i,'building')) {var building=this.is_data(i,'building')}else{var building = 'N/A';}
 				$('div.osm-result-chart > table >tbody').append(
 					"<tr>\
-						<td><a id = "+data.elements[i].id+" class='pop ' href='#'>"+data.elements[i].id+"</td>\
+						<td><button id = "+data.elements[i].id+" class='pop' value = "+data.elements[i].id+">"+data.elements[i].id+"</button></td>\
 						<td>"+street+"</td>\
 						<td>"+name+"</td>\
 						<td>"+building+"</td>\

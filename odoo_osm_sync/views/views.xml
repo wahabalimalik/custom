@@ -17,7 +17,6 @@
         <xpath expr="." position="inside">
           <link href="/odoo_osm_sync/static/src/css/dashboard.css" rel="stylesheet" type="text/css"/>
           <script type="text/javascript" src="/odoo_osm_sync/static/src/js/dashboard.js"></script>
-          <script type="text/javascript" src="/odoo_osm_sync/static/src/js/overpass_dashboard.js"></script>
         </xpath>
     </template>
 
@@ -40,10 +39,13 @@
                   <field name="bus_ids"/>
                   <field name="street"/>
                   <field name="name"/>
+                  <field name="area"/>
                   <field name="building"/>
-                  <field name="levels"/>
+                  <field name="property_valuation"/>
+                  <field name="property_tax"/>
                 </group>
                 <group>
+                  <field name="levels"/>
                   <field name="material"/>
                   <field name="shop"/>
                   <field name="types"/>
@@ -203,17 +205,22 @@
                     </div>
                   </xpath>
                   <xpath expr="//field[@name='website']" position="before">
-                      <field name="bus_ids"/>
-                      <field name="vrn"/>
-                      <field name="tin"/>
-                      <field name="efd"/>
-                      <field name="tax"/>
+                    <field name="bus_ids"/>
+                    <field name="vrn"/>
+                    <field name="tin"/>
+                    <field name="efd"/>
+                    <field name="tax"/>
+                    <field name="area_own"/>
+                    <field name="property_valuation"/>
+                    <field name="property_tax"/>
+                    <field name="building"/>
                   </xpath>
                   <xpath expr="//field[@name='function']" position="before">
-                      <field name="valued"/>
-                      <field name="assess"/>
-                      <field name="branch"/>
-                      <field name="citizen"/>
+                    <field name="killbill_id" />
+                    <field name="valued"/>
+                    <field name="assess"/>
+                    <field name="branch"/>
+                    <field name="citizen"/>
                   </xpath>
                   <!-- <xpath expr="//page[@name='sales_purchases']" position="after"> -->
                   <xpath expr="//notebook/page" position="before">
@@ -230,7 +237,7 @@
                   </xpath>
                 </data>
             </field>
-        </record>
+      </record>
 
     <!-- actions opening views on models -->
     

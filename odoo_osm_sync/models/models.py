@@ -5,6 +5,11 @@ from odoo.exceptions import UserError, ValidationError
 import requests,json
 headers = {'Content-Type': 'application/json'}
 
+# class Osm_Config(models.TransientModel):
+#     _inherit = 'base.config.settings'
+#     username = fields.Char('User Name')
+#     password = fields.Char()
+
 class OsmBuildingData(models.Model):
 	_name = 'osm.build'
 	_rec_name = 'bus_ids'
@@ -12,13 +17,31 @@ class OsmBuildingData(models.Model):
 	bus_ids = fields.Integer("Building ID")
 	street = fields.Char()
 	name = fields.Char()
+	area = fields.Char()
 	building = fields.Char()
 	levels = fields.Integer()
 	material = fields.Char()
+	property_valuation = fields.Float(compute='_compute_valuation',string='Property Valuation')
+	property_tax = fields.Float(compute='_compute_tax',string='Property Tax')
 	shop = fields.Char()
 	types = fields.Char()
 	amenity = fields.Char()
 	info_data = fields.One2many('info.data', 'info_id')
+
+	@api.one
+	@api.depends('property_valuation','building')
+	def _compute_tax(self):
+		if self.property_valuation and self.building:
+			if 'commercial' in self.building:
+				self.property_tax = self.property_valuation * 0.20 / 100
+			else:
+				self.property_tax = self.property_valuation * 0.15 / 100
+
+	@api.one
+	@api.depends('area')
+	def _compute_valuation(self):
+		if self.area:
+			self.property_valuation = float(self.area) * 50000
 
 	@api.multi
 	def button_open_wizard_tnt(self):
@@ -41,7 +64,7 @@ class OsmBuildingData(models.Model):
 		'view_type': 'form',
 		'view_mode': 'form',
 		'target' : 'new',
-		'context':"{'default_bus_ids': %s}" %(self.bus_ids)
+		'context':"{'default_bus_ids': %s,'default_area_own': %s}" %(self.id,self.area)
 		}
 
 class InfoData(models.Model):
@@ -114,7 +137,7 @@ class osm_build_own(models.Model):
 				}
 		}
 
-		requests.post('http://localhost:8069/details/owner/', headers=headers, data=json.dumps(data))
+		requests.post('http://139.99.101.43:8000/details/owner/', headers=headers, data=json.dumps(data))
  
 class osm_build_tnt(models.Model):
 	_name = 'build.tnt'
@@ -169,13 +192,18 @@ class osm_build_tnt(models.Model):
 		"valued" : self.valued,
 		}
 		}
-		requests.post('http://localhost:8069/details/tenant/', headers=headers, data=json.dumps(data))
+		requests.post('http://139.99.101.43:8000/details/tenant/', headers=headers, data=json.dumps(data))
 
 class ResPartnerExt(models.Model):
 	_inherit = 'res.partner'
 
-	bus_ids = fields.Char(readonly=True)
+	bus_ids = fields.Many2one('osm.build',string="Business ID")
 	name = fields.Char('Owner Name')
+	killbill_id = fields.Char('KillBill ID')
+	area_own = fields.Float()
+	building = fields.Char(compute='_compute_building')
+	property_valuation = fields.Float(compute='_compute_valuation',string='Property Valuation')
+	property_tax = fields.Float(compute='_compute_tax',string='Property Tax')
 	citizen = fields.Boolean()
 	vrn = fields.Integer('VRN')
 	assess = fields.Boolean()
@@ -185,12 +213,28 @@ class ResPartnerExt(models.Model):
 	efd = fields.Char('EFD')
 	valued = fields.Char('Valued')
 	tenants_id = fields.One2many('build.tnt','tnt_id_1')
+	
+	@api.one
+	@api.depends('bus_ids.building')
+	def _compute_building(self):
+		if self.bus_ids.building:
+			self.building = self.bus_ids.building
 
 	@api.one
-	@api.depends('tenants_id.tax')
+	@api.depends('property_valuation','building')
 	def _compute_tax(self):
-		if self.tenants_id:
-			self.tax = sum(x.tax for x in self.tenants_id)
+		if self.property_valuation and self.building:
+			if 'commercial' in self.building:
+				self.property_tax = self.property_valuation * 0.20 / 100
+			else:
+				self.property_tax = self.property_valuation * 0.15 / 100
+
+	@api.one
+	@api.depends('area_own')
+	def _compute_valuation(self):
+		if self.area_own:
+			self.property_valuation = float(self.area_own) * 50000
+
 
 	@api.multi
 	def create_own(self):
@@ -216,4 +260,3 @@ class ResPartnerExt(models.Model):
 		}
 
 		requests.post('http://localhost:8069/details/owner/', headers=headers, data=json.dumps(data))
-		
